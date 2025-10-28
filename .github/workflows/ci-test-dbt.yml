@@ -28,6 +28,9 @@ on:
       gh_token:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   modular-python-test:
     name: py${{ inputs.python-version }}-${{ inputs.dbt-version }}
@@ -54,6 +57,11 @@ jobs:
           - 5432:5432
 
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@v4
 
     - name: Set up Python

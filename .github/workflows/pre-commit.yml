@@ -11,6 +11,11 @@ jobs:
       CS_XML: pre-commit.xml
       SKIP: no-commit-to-branch
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - run: sudo apt-get update && sudo apt-get install cppcheck
         if: false
       - uses: actions/checkout@v4

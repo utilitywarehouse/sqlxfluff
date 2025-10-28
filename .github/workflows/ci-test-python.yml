@@ -29,11 +29,19 @@ on:
       gh_token:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   modular-python-test:
     runs-on: ubuntu-latest
     name: py${{ inputs.python-version }}
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@v4
 
     - name: Set up Python

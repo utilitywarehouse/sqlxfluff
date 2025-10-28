@@ -26,6 +26,9 @@ on:
     # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#merge_group
     types: [checks_requested]
 
+permissions:
+  contents: read
+
 jobs:
 
   linting:
@@ -50,6 +53,11 @@ jobs:
             python-version: "3.12"
     name: ${{ matrix.job }} tests
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -160,6 +168,11 @@ jobs:
   ymlchecks:
     runs-on: ubuntu-latest
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -186,6 +199,11 @@ jobs:
     runs-on: ubuntu-latest
     name: example tests
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -207,6 +225,11 @@ jobs:
     runs-on: windows-latest
     name: Python 3.13 Windows tests
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Set git to use LF
       run: |
         git config --global core.autocrlf false
@@ -243,6 +266,11 @@ jobs:
     runs-on: windows-latest
     name: dbt Plugin Python 3.12 Windows tests
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Start PostgreSQL on Windows
       run: |
         $pgService = Get-Service -Name postgresql*
@@ -278,6 +306,11 @@ jobs:
     if: github.event_name == 'pull_request'
     name: pip install tests
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -307,6 +340,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [python-version-tests, dbt-tests, python-windows-tests, dialect-tests]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
