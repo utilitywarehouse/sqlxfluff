@@ -3,12 +3,23 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  contents: read
+
 jobs:
   triage:
+    permissions:
+      contents: read  # for github/issue-labeler to get repo contents
+      issues: write  # for github/issue-labeler to create or remove labels
     runs-on: ubuntu-latest
     steps:
       # Update .github/labeler.yml for new dialects
-      - uses: github/issue-labeler@v3.2
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@8d3c67de8e2fe68ef647c8db1e6a09f647780f40 # v2.19.0
+        with:
+          egress-policy: audit
+
+      - uses: github/issue-labeler@98b5412841f6c4b0b3d9c29d53c13fad16bd7de2 # v3.2
         with:
           configuration-path: .github/labeler.yml
           include-title: 1

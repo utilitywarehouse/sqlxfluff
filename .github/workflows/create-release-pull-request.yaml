@@ -11,7 +11,12 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@8d3c67de8e2fe68ef647c8db1e6a09f647780f40 # v2.19.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Abort if branch already exists
         run: |
             _check_branch=$(git ls-remote --heads origin prep-${{ github.event.inputs.newVersionNumber }})
@@ -23,7 +28,7 @@ jobs:
             fi
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
 
@@ -39,7 +44,7 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ secrets.GITHUB_REPOSITORY_OWNER }}
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           delete-branch: true
           branch: prep-${{ github.event.inputs.newVersionNumber }}
@@ -68,7 +73,7 @@ jobs:
             skip-changelog
 
       - name: Update release title and tag
-        uses: release-drafter/release-drafter@v6
+        uses: release-drafter/release-drafter@6a93d829887aa2e0748befe2e808c66c0ec6e4c7 # v6.4.0
         with:
           # NOTE: We should eventually actually populate the date here, but that
           # will most likely change before the new pull request actually gets
